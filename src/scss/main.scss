@@ -1,0 +1,11 @@
+$bkgc: #ff000;
+
+body {
+	background-color: $bkgc;
+}
+
+h1 {
+	color: white;
+	font-size: 2rem;
+	background-color: $bkgc;
+}

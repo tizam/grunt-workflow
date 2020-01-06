@@ -11,11 +11,14 @@ const del = require('del')
 const babel = require('gulp-babel')
 const concat = require('gulp-concat')
 const imagemin = require('gulp-imagemin')
+
+// reload function
 const reload = (done) => {
     server.reload()
     done()
 }
 
+// browserSync init server
 const serve = (done) => {
     server.init({
         server: './',
@@ -23,12 +26,10 @@ const serve = (done) => {
     done()
 }
 
+// clean the dist folder
 const clean = () => del(['./dist'])
 
-const build = () => {
-    console.log('build task')
-}
-
+// css task
 const css = () => {
     return src('./src/scss/**/*.scss')
         .pipe(sourcemaps.init())
@@ -42,6 +43,7 @@ const css = () => {
         .pipe(dest('./dist/css/'))
 }
 
+// js task
 const js = () => {
     return src('./src/js/**/*.js')
         .pipe(sourcemaps.init())
@@ -54,6 +56,7 @@ const js = () => {
         .pipe(dest('./dist/js/'))
 }
 
+// image task
 const image = () => {
     return src('./src/images/*')
         .pipe(imagemin([
@@ -70,6 +73,7 @@ const image = () => {
         .pipe(dest('./dist/images/'))
 }
 
+// watch file task
 const watchFile = () => {
     watch(['./src/**/*.scss'], series([css, reload]))
     watch(['./**/*.html'], series([reload]))
@@ -77,8 +81,10 @@ const watchFile = () => {
     watch(['./src/**/*.png', './src/**/*.jpg', './src/**/*.svg', './src/**/*.jpeg'], series([image, reload]))
 }
 
+// default dev function
 const dev = series(clean, parallel([css, js, image]), serve, watchFile)
 
+// export functions
 exports.image = image
 exports.clean = clean
 exports.default = dev

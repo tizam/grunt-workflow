@@ -10,7 +10,7 @@ const server = browserSync.create()
 const del = require('del')
 const babel = require('gulp-babel')
 const concat = require('gulp-concat')
-
+const imagemin = require('gulp-imagemin')
 const reload = (done) => {
     server.reload()
     done()
@@ -54,19 +54,31 @@ const js = () => {
         .pipe(dest('./dist/js/'))
 }
 
+const image = () => {
+    return src('./src/images/*')
+        .pipe(imagemin([
+            imagemin.gifsicle({ interlaced: true }),
+            imagemin.jpegtran({ progressive: true }),
+            imagemin.optipng({ optimizationLevel: 5 }),
+            imagemin.svgo({
+                plugins: [
+                    { removeViewBox: true },
+                    { cleanupIDs: false }
+                ]
+            })
+        ]))
+        .pipe(dest('./dist/images/'))
+}
+
 const watchFile = () => {
     watch(['./src/**/*.scss'], series([css, reload]))
     watch(['./**/*.html'], series([reload]))
     watch(['./src/**/*.js'], series([js, reload]))
+    watch(['./src/**/*.png', './src/**/*.jpg', './src/**/*.svg', './src/**/*.jpeg'], series([image, reload]))
 }
 
-const dev = series(clean, parallel([css, js]), serve, watchFile)
+const dev = series(clean, parallel([css, js, image]), serve, watchFile)
 
+exports.image = image
 exports.clean = clean
 exports.default = dev
-
-// exports.css = css
-// exports.watchFile = watchFile
-// exports.browserSyncInit = browserSyncInit
-// exports.default = series([css, browserSyncInit])
-

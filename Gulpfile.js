@@ -8,6 +8,8 @@ const cssnano = require('gulp-cssnano')
 const browserSync = require('browser-sync')
 const server = browserSync.create()
 const del = require('del')
+const babel = require('gulp-babel')
+const concat = require('gulp-concat')
 
 const reload = (done) => {
     server.reload()
@@ -40,12 +42,25 @@ const css = () => {
         .pipe(dest('./dist/css/'))
 }
 
+const js = () => {
+    return src('./src/js/**/*.js')
+        .pipe(sourcemaps.init())
+        .pipe(babel({
+            presets: ['@babel/env']
+        }))
+        .pipe(concat('all.js'))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('.'))
+        .pipe(dest('./dist/js/'))
+}
+
 const watchFile = () => {
     watch(['./src/**/*.scss'], series([css, reload]))
     watch(['./**/*.html'], series([reload]))
+    watch(['./src/**/*.js'], series([js, reload]))
 }
 
-const dev = series(clean, css, serve, watchFile)
+const dev = series(clean, parallel([css, js]), serve, watchFile)
 
 exports.clean = clean
 exports.default = dev

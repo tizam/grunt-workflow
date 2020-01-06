@@ -1,11 +1,10 @@
-$bkgc: #ff000;
+$bkgc: #ff00ff;
 
 body {
 	background-color: $bkgc;
 }
 
 h1 {
-	color: white;
+	color: red;
 	font-size: 2rem;
-	background-color: $bkgc;
 }

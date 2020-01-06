@@ -1,10 +1,27 @@
-const { src, dest, parallel, watch } = require('gulp')
+const { src, dest, parallel, watch, series } = require('gulp')
 const sass = require('gulp-sass')
 const sourcemaps = require('gulp-sourcemaps')
 const autoprefixer = require('gulp-autoprefixer')
 const rename = require('gulp-rename')
 const uglify = require('gulp-uglify')
 const cssnano = require('gulp-cssnano')
+const browserSync = require('browser-sync')
+const server = browserSync.create()
+const del = require('del')
+
+const reload = (done) => {
+    server.reload()
+    done()
+}
+
+const serve = (done) => {
+    server.init({
+        server: './',
+    })
+    done()
+}
+
+const clean = () => del(['./dist'])
 
 const build = () => {
     console.log('build task')
@@ -24,10 +41,17 @@ const css = () => {
 }
 
 const watchFile = () => {
-    watch(['./src/scss/**/*.scss'], css)
+    watch(['./src/**/*.scss'], series([css, reload]))
+    watch(['./**/*.html'], series([reload]))
 }
 
-exports.css = css
-exports.watchFile = watchFile
-exports.default = build
+const dev = series(clean, css, serve, watchFile)
+
+exports.clean = clean
+exports.default = dev
+
+// exports.css = css
+// exports.watchFile = watchFile
+// exports.browserSyncInit = browserSyncInit
+// exports.default = series([css, browserSyncInit])
 

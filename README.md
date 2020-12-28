@@ -1,6 +1,6 @@
 # Grunt Workflow
 
-A simple Grunt workflow I want to use with WordPress
+A simple gulp workflow I want to use with WordPress
 basic tasks are performed: 
 - autoreload with browserSync
 - sass compilation
@@ -10,7 +10,7 @@ basic tasks are performed:
 ### Install
 - clone this repo
 ```
-git clone https://github.com/tizam/grunt-workflow.git
+git clone https://github.com/tizam/gulp-workflow.git
 ```
 - install dependencies
 ```
